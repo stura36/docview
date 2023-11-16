@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify
 from data_loader import read_data
-from database import DocumentBase
+from data_driver import DocumentBase
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -12,9 +16,9 @@ def upload_excel():
         if file.filename.endswith(".xlsx"):
             df1, df2, df3 = read_data(file)
             db = DocumentBase(
-                "neo4j+s://4c66c8b1.databases.neo4j.io",
-                "neo4j",
-                "y8-ueDTOtmpUbjkZcZxjgNzlRUpTK_QPxg2s10de7tc",
+                os.getenv("NEO4J_URI"),
+                os.getenv("NEO4J_USER"),
+                os.getenv("NEO4J_PASSWORD"),
             )
             db.add_authors(df1)
             db.add_sections(df2)
